@@ -8,37 +8,17 @@ namespace Lab2
     {
         static void Main(string[] args)
         {
-            var a = new  List<List<decimal>>()
+            var a = new  decimal[][]
             {
-                new List<decimal>{1, 2, 4},
-                new List<decimal>{4, 5, 6},
-                new List<decimal>{0, 2, 3},
+                new decimal[]{1, 2, 4},
+                new decimal[]{4, 5, 6},
+                new decimal[]{0, 2, 3},
             };
 
-            var l = new List<List<decimal>>()
-            {
-                new List<decimal> {0, 0, 0},
-                new List<decimal> {0, 0, 0},
-                new List<decimal> {0, 0, 0},
-            };
 
-            var u = new List<List<decimal>>()
-            {
-                new List<decimal> {0, 0, 0},
-                new List<decimal> {0, 0, 0},
-                new List<decimal> {0, 0, 0},
-            };
+            var res = SeidelIterativeMethod.Solve(a, new decimal[]{17,32,13}, 0.0001M);
             
-            GaussianElimination.LuDecomposition(a, l, u, 3);
-            
-            Show(l);
-            Console.WriteLine("----------");
-            Show(u);
-            Console.WriteLine("----------");
-
-            var res = GaussianElimination.Solve(l, u, new List<decimal>(){13,17,32});
-            
-            foreach (var @decimal in res)
+            foreach (var @decimal in res.solution)
             {
                 Console.WriteLine(@decimal);
             }
