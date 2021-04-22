@@ -4,7 +4,7 @@ namespace Lab2.Tests
     {
         protected override decimal[] Calculate(decimal[,] a, decimal[] b)
         {
-            return SeidelIterativeMethod.Solve(a, b, ACCURACY).solution;
+            return SeidelIterativeMethod.Solve(a, b, ACCURACY);
         }
     }
 }
