@@ -8,7 +8,7 @@ namespace Lab2
         public static void LuDecomposition(List<List<decimal>> a, List<List<decimal>> l,
             List<List<decimal>> u, int n)
         {
-            int i = 0, j = 0, k = 0;
+            int i, j, k;
             for (i = 0; i < n; i++)
             {
                 for (j = 0; j < n; j++)
@@ -43,13 +43,24 @@ namespace Lab2
             }
         }
 
-        public static decimal[] Solve(List<List<decimal>> l, List<List<decimal>> u, List<decimal> b)
+        public static decimal[] Solve(List<List<decimal>> a, List<decimal> b)
         {
             int i;
             decimal sum;
             var y = new decimal[b.Count];
             var x = new decimal[b.Count];
             var n = b.Count;
+
+            var l = Enumerable.Range(0, b.Count).Select(_ => new List<decimal>()).ToList();
+            var u = Enumerable.Range(0, b.Count).Select(_ => new List<decimal>()).ToList();
+            
+            for (var i1 = 0; i1 < l.Count; i1++)
+            {
+                l[i1] = Enumerable.Range(0, b.Count).Select(_ => 0M).ToList();
+                u[i1] = Enumerable.Range(0, b.Count).Select(_ => 0M).ToList();
+            }
+
+            LuDecomposition(a, l, u, b.Count);
 
             for (i = 0; i < n; i++)
             {
