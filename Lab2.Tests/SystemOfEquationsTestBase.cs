@@ -8,17 +8,17 @@ namespace Lab2.Tests
     {
         private const decimal ACCURACY = 0.0001M;
         
-        private readonly decimal[][] a = {
-            new decimal[]{1, 2, 4},
-            new decimal[]{4, 5, 6},
-            new decimal[]{0, 2, 3},
+        private readonly decimal[,] a = {
+            {1, 2, 4},
+            {4, 5, 6},
+            {0, 2, 3},
         };
 
         private readonly decimal[] b = {17, 32, 13};
 
         private readonly decimal[] expected = {1, 2, 3};
 
-        protected abstract decimal[] Calculate(decimal[][] a, decimal[] b);
+        protected abstract decimal[] Calculate(decimal[,] a, decimal[] b);
 
         [Test]
         public void Test()
