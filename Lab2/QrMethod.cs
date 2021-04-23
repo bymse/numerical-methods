@@ -4,123 +4,9 @@ namespace Lab2
 {
     public static class QrMethod
     {
-        static void matrix_transpose(decimal[,] m)
-        {
-            for (int i = 0; i < m.GetLength(0); i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    decimal t = m[i, j];
-                    m[i, j] = m[j, i];
-                    m[j, i] = t;
-                }
-            }
-        }
-
-        static decimal[,] matrix_mul(decimal[,] x, decimal[,] y)
-        {
-            if (x.GetLength(0) != y.GetLength(0))
-                return default;
-            var r = new decimal[x.GetLength(0), y.GetLength(0)];
-            for (int i = 0; i < x.GetLength(0); i++)
-            for (int j = 0; j < y.GetLength(0); j++)
-            for (int k = 0; k < x.GetLength(0); k++)
-                r[i, j] += x[i, k] * y[k, j];
-            return r;
-        }
-
-        static decimal[,] matrix_minor(decimal[,] x, int d)
-        {
-            var n = x.GetLength(0);
-            var m = new decimal[n, n];
-            for (int i = 0; i < d; i++)
-                m[i, i] = 1;
-            for (int i = d; i < n; i++)
-            for (int j = d; j < n; j++)
-                m[i, j] = x[i, j];
-            return m;
-        }
-
-/* c = a + b * s */
-        static decimal[] vmadd(decimal[] a, decimal[] b, decimal s, decimal[] c, int n)
-        {
-            for (int i = 0; i < n; i++)
-                c[i] = a[i] + s * b[i];
-            return c;
-        }
-
-/* m = I - v v^T */
-        static decimal[,] vmul(decimal[] v, int n)
-        {
-            var x = new decimal[n, n];
-            for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                x[i, j] = -2 * v[i] * v[j];
-            for (int i = 0; i < n; i++)
-                x[i, i] += 1;
-
-            return x;
-        }
-
-        static decimal[] vdiv(decimal[] x, decimal d, decimal[] y, int n)
-        {
-            for (int i = 0; i < n; i++) y[i] = x[i] / d;
-            return y;
-        }
-
-/* take c-th column of m, put in v */
-        static decimal[] mcol(decimal[,] m, decimal[] v, int c)
-        {
-            for (int i = 0; i < m.GetLength(0); i++)
-                v[i] = m[i, c];
-            return v;
-        }
-
-
-        public static void householder(decimal[,] m, ref decimal[,] R, ref decimal[,] Q)
-        {
-            var q = new decimal[m.GetLength(0)][,];
-            decimal[,] z = m, z1;
-            for (int k = 0; k < m.GetLength(0) && k < m.GetLength(0) - 1; k++)
-            {
-                var e = new decimal[m.GetLength(0)];
-                var x = new decimal[m.GetLength(0)];
-                z1 = matrix_minor(z, k);
-                z = z1;
-
-                mcol(z, x, k);
-                var a = x.Norm();
-                if (m[k, k] > 0)
-                    a = -a;
-
-                for (int i = 0; i < m.GetLength(0); i++)
-                    e[i] = (i == k) ? 1 : 0;
-
-                vmadd(x, e, a, e, m.GetLength(0));
-                vdiv(e, e.Norm(), e, m.GetLength(0));
-                q[k] = vmul(e, m.GetLength(0));
-                z1 = q[k].Multiply(z);
-                z = z1;
-            }
-
-            Q = q[0];
-            R = matrix_mul(q[0], m);
-            for (int i = 1; i < m.GetLength(0) && i < m.GetLength(0) - 1; i++)
-            {
-                z1 = matrix_mul(q[i], Q);
-                Q = z1;
-            }
-
-            z = matrix_mul(Q, m);
-            R = z;
-            Q = Q.Transpose();
-        }
-
         public static decimal[] Solve(decimal[,] a, decimal[] b)
         {
-            var q = new decimal[0, 0];
-            var r = new decimal[0, 0];
-            householder(a, ref r, ref q);
+            var (q, r) = QrHouseholder(a);
 
             var x = new decimal[b.Length];
             var transposedQ = q.Transpose();
@@ -135,6 +21,92 @@ namespace Lab2
             }
 
             return x;
+        }
+        
+        private static (decimal[,] Q, decimal[,] R) QrHouseholder(decimal[,] m)
+        {
+            var q = new decimal[m.GetLength(0)][,];
+            decimal[,] z = m, z1;
+            for (var k = 0; k < m.GetLength(0) && k < m.GetLength(0) - 1; k++)
+            {
+                z1 = matrix_minor(z, k);
+                z = z1;
+
+                var x =CopyColumn(z, k);
+                var a = x.Norm();
+                if (m[k, k] > 0)
+                    a = -a;
+
+                var e = new decimal[m.GetLength(0)];
+                for (var i = 0; i < m.GetLength(0); i++)
+                    e[i] = (i == k) ? 1 : 0;
+
+                vmadd(x, e, a, e, m.GetLength(0));
+                vdiv(e, e.Norm(), e, m.GetLength(0));
+                q[k] = vmul(e, m.GetLength(0));
+                z1 = q[k].Multiply(z);
+                z = z1;
+            }
+
+            var resultQ = q[0];
+            for (var i = 1; i < m.GetLength(0) && i < m.GetLength(0) - 1; i++)
+            {
+                z1 = q[i].Multiply(resultQ);
+                resultQ = z1;
+            }
+
+            z = resultQ.Multiply(m);
+            var resultR = z;
+            resultQ = resultQ.Transpose();
+
+            return (resultQ, resultR);
+        }
+        
+        private static decimal[,] matrix_minor(decimal[,] x, int d)
+        {
+            var n = x.GetLength(0);
+            var m = new decimal[n, n];
+            for (var i = 0; i < d; i++)
+                m[i, i] = 1;
+            for (var i = d; i < n; i++)
+            for (var j = d; j < n; j++)
+                m[i, j] = x[i, j];
+            return m;
+        }
+
+        //c = a + b * s
+        private static void vmadd(decimal[] a, decimal[] b, decimal s, decimal[] c, int n)
+        {
+            for (var i = 0; i < n; i++)
+                c[i] = a[i] + s * b[i];
+        }
+
+        /* m = I - v v^T */
+        private static decimal[,] vmul(decimal[] v, int n)
+        {
+            var x = new decimal[n, n];
+            for (var i = 0; i < n; i++)
+            for (var j = 0; j < n; j++)
+                x[i, j] = -2 * v[i] * v[j];
+            for (var i = 0; i < n; i++)
+                x[i, i] += 1;
+
+            return x;
+        }
+
+        private static decimal[] vdiv(decimal[] x, decimal d, decimal[] y, int n)
+        {
+            for (var i = 0; i < n; i++) y[i] = x[i] / d;
+            return y;
+        }
+
+        /* take c-th column of m, put in v */
+        private static decimal[] CopyColumn(decimal[,] from, int column)
+        {
+            var to = new decimal[from.GetLength(0)]; 
+            for (var i = 0; i < from.GetLength(0); i++)
+                to[i] = from[i, column];
+            return to;
         }
     }
 }
