@@ -5,11 +5,11 @@ namespace Lab2
 {
     public class SimpleIterativeMethod
     {
-        public static decimal[] Solve(decimal[][] a, decimal[] b, decimal e)
+        public static decimal[] Solve(decimal[,] a, decimal[] b, decimal e)
         {
             var n = b.Length;
             var x = new decimal[n];
-            
+
             var temp = 2 / (Norm(a) + e);
             var bCoeffs = CalculateBCoeffs(a, temp);
             var bNorm = Norm(bCoeffs);
@@ -23,16 +23,16 @@ namespace Lab2
 
             if (bNorm >= 1)
                 throw new Exception();
-            
+
             var target = e * (1 - bNorm) / bNorm;
-            
+
             var xPrevious = new decimal[n];
             var c = b.Select(r => temp * r).ToArray();
             c.CopyTo(xPrevious, 0);
 
             while (true)
             {
-                var newX = Sum(MultiplyMatrix(bCoeffs, xPrevious), c);
+                var newX = bCoeffs.Multiply(xPrevious).Sum(c);
 
                 for (var i = 0; i < x.Length; i++)
                 {
@@ -46,17 +46,16 @@ namespace Lab2
             }
         }
 
-        private static decimal[][] CalculateBCoeffs(decimal[][] a, decimal temp)
+        private static decimal[,] CalculateBCoeffs(decimal[,] a, decimal temp)
         {
-            var n = a.Length;
-            var bCoeffs = new decimal[n][];
+            var n = a.GetLength(0);
+            var bCoeffs = new decimal[n, n];
             for (var i = 0; i < n; i++)
             {
-                bCoeffs[i] = new decimal[n];
                 for (var j = 0; j < n; j++)
                 {
-                    var product = temp * a[i][j];
-                    bCoeffs[i][j] = i == j
+                    var product = temp * a[i, j];
+                    bCoeffs[i, j] = i == j
                         ? 1 - product
                         : -product;
                 }
@@ -65,25 +64,24 @@ namespace Lab2
             return bCoeffs;
         }
 
-        private static (decimal[][] a, decimal[] b) Fix(decimal[][] a, decimal[] b)
+        private static (decimal[,] a, decimal[] b) Fix(decimal[,] a, decimal[] b)
         {
-            var transponed = new decimal[a.Length][];
-            for (var i = 0; i < a.Length; i++)
+            var transponed = new decimal[a.GetLength(0), a.GetLength(0)];
+            for (var i = 0; i < a.GetLength(0); i++)
             {
-                transponed[i] = new decimal[a.Length];
-                for (var j = 0; j < a.Length; j++)
+                for (var j = 0; j < a.GetLength(0); j++)
                 {
-                    transponed[i][j] = a[j][i];
+                    transponed[i, j] = a[j, i];
                 }
             }
 
-            var outputA = MultiplyMatrix(transponed, a);
-            var outputB = MultiplyMatrix(transponed, b);
+            var outputA = transponed.Multiply(a);
+            var outputB = transponed.Multiply(b);
 
             return (outputA, outputB);
         }
 
-        private static decimal Norm(decimal[][] arr)
+        private static decimal Norm(decimal[,] arr)
         {
             var max = 0M;
             var r = arr.GetLength(0);
@@ -92,63 +90,13 @@ namespace Lab2
                 var sum = 0M;
                 for (var i = 0; i < r; i++)
                 {
-                    sum += Math.Abs(arr[i][j]);
+                    sum += Math.Abs(arr[i, j]);
                 }
 
                 max = Math.Max(max, sum);
             }
 
             return max;
-        }
-
-        public static decimal[][] MultiplyMatrix(decimal[][] first, decimal[][] second)
-        {
-            int rA = first.Length;
-            int cA = first.Length;
-            int cB = second.Length;
-            decimal temp = 0;
-            var kHasil = new decimal[rA][];
-            for (int i = 0; i < rA; i++)
-            {
-                kHasil[i] = new decimal[cB];
-                for (int j = 0; j < cB; j++)
-                {
-                    temp = 0;
-                    for (int k = 0; k < cA; k++)
-                    {
-                        temp += first[i][k] * second[k][j];
-                    }
-
-                    kHasil[i][j] = temp;
-                }
-            }
-
-            return kHasil;
-        }
-
-        public static decimal[] MultiplyMatrix(decimal[][] first, decimal[] second)
-        {
-            var rA = first.GetLength(0);
-            var cA = first.GetLength(0);
-            decimal temp;
-            var kHasil = new decimal[rA];
-            for (var i = 0; i < rA; i++)
-            {
-                temp = 0;
-                for (var k = 0; k < cA; k++)
-                {
-                    temp += first[i][k] * second[k];
-                }
-
-                kHasil[i] = temp;
-            }
-
-            return kHasil;
-        }
-
-        private static decimal[] Sum(decimal[] first, decimal[] second)
-        {
-            return first.Select((e, i) => e + second[i]).ToArray();
         }
     }
 }

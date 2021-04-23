@@ -21,17 +21,28 @@ namespace NumericalMethods
                                (decimal) Math.Pow((double) val, 2 * k + 1)
                                / (2 * k + 1);
                     sum += item;
-                    k++;
 
-                    if (Math.Abs(sum) < Math.Abs(EpsilonForArctg))
+                    if (Math.Abs(item) < Math.Abs(EpsilonForArctg))
                     {
                         return sum;
                     }
                 }
                 else
                 {
-                    throw new Exception("Val is greater than one on custom arctg");
+                    var item = (decimal) Math.Pow(-1, k) *
+                               (decimal) Math.Pow((double) val, -(2 * k + 1))
+                               / (2 * k + 1);
+
+                    sum += item;
+                    
+                    if (Math.Abs(item) < Math.Abs(EpsilonForArctg))
+                    {
+                        return (decimal) Math.PI / 2 * Math.Sign(val)  - sum;
+                    }
+                    
                 }
+
+                k++;
             }
         }
 

@@ -16,22 +16,36 @@ namespace Lab2
             };
 
 
-            var res = SeidelIterativeMethod.Solve(a, new decimal[]{17,32,13}, 0.0001M);
-            
-            foreach (var @decimal in res.solution)
-            {
-                Console.WriteLine(@decimal);
-            }
+            // //Householder.Solve(a, new decimal[]{5,7,9});
+            // var m = new mat()
+            // {
+            //     V = a
+            // };
+            //
+            // var q = new mat();
+            // var r = new mat();
+            //     var obj = new HouseholderFromC();
+            //  obj.householder(m, ref r, ref q);
+            //  var res = obj.Solve(q, r, new decimal[] {17, 32, 13});
+            //
+            //  // Show(q.V);
+            //  // Console.WriteLine("------");
+            //  // Show(r.V);
+            //
+            //  foreach (var @decimal in res)
+            //  {
+            //       Console.WriteLine(@decimal);
+            //  }
         }
 
-        private static void Show(List<List<decimal>> arr)
+        private static void Show(decimal[][] arr)
         {
-            for (var index0 = 0; index0 < arr.Count; index0++)
+            for (var index0 = 0; index0 < arr.Length; index0++)
             {
-                for (var index1 = 0; index1 < arr.Count; index1++)
+                for (var index1 = 0; index1 < arr.Length; index1++)
                 {
                     var val = arr[index0][index1];
-                    Console.Write(val);
+                    Console.Write($"{val:00.00}");
                     Console.Write("   ");
                 }
 

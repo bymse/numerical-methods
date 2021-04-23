@@ -12,7 +12,7 @@ namespace Lab2.Tests
         protected abstract decimal[] Calculate(decimal[,] a, decimal[] b);
 
         [Test]
-        public void Test0()
+        public virtual void Test0()
         {
             Test(new TestCase()
             {
@@ -28,7 +28,7 @@ namespace Lab2.Tests
         }
 
         [Test]
-        public void Test1()
+        public virtual void Test1()
         {
             Test(new TestCase
             {
@@ -44,7 +44,7 @@ namespace Lab2.Tests
         }
 
         [Test]
-        public void Test2()
+        public virtual void Test2()
         {
             Test(new TestCase
             {
@@ -60,7 +60,7 @@ namespace Lab2.Tests
         }
 
         [Test]
-        public void Test3()
+        public virtual void Test3()
         {
             Test(new TestCase
             {
@@ -76,7 +76,7 @@ namespace Lab2.Tests
         }
 
         [Test]
-        public void Test4()
+        public virtual void Test4()
         {
             Test(new TestCase
             {
@@ -91,7 +91,7 @@ namespace Lab2.Tests
             });
         }
 
-        private void Test(TestCase @case)
+        protected void Test(TestCase @case)
         {
             var result = Calculate(@case.Coefficients, @case.RightPart);
             AssertResult(@case.Solution, result, ACCURACY);

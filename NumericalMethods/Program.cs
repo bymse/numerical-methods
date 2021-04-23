@@ -8,9 +8,11 @@ namespace NumericalMethods
     {
         static void Main(string[] args)
         {
-            ElementaryFunctions.EpsilonForArctg = ;
-            ElementaryFunctions.EpsilonForSin = ;
-            ElementaryFunctions.EpsilonForSqrt = ;
+            //рассчитанные в первом задании значения
+            ElementaryFunctions.EpsilonForArctg = 0.0000002507522567703109327983951855566700100M;
+            ElementaryFunctions.EpsilonForSin = 0.000000561167227833894500561167227833894500561M;
+            ElementaryFunctions.EpsilonForSqrt = 0.00000114498747383703622282372230847794525127M;
+            
             PrintTable();
         }
 
@@ -20,6 +22,7 @@ namespace NumericalMethods
             const decimal end = 0.3M;
             const decimal shift = 0.01M;
             var writer = new StringWriter(CultureInfo.InvariantCulture);
+            
             writer.WriteLine("step,g,g',delta(g),fi,fi',delta(fi),psi,psi',delta(psi),z,z',delta(z)");
             for (var val = start; val <= end; val += shift)
             {
@@ -32,7 +35,7 @@ namespace NumericalMethods
                 PrintNativeCustomDiff(val, Execute_Custom, Execute_Native, writer);
                 writer.WriteLine();
             }
-            File.WriteAllText("out.csv",writer.ToString());
+            File.WriteAllText(@"C:\Users\bymse\Desktop\temp\out.csv",writer.ToString());
         }
 
         private static void PrintNativeCustomDiff(decimal val,
@@ -83,14 +86,13 @@ namespace NumericalMethods
             return ExecutePsi(val, ElementaryFunctions.Sin);
         }
         
-
         private static decimal ExecuteFi(decimal val,
             Func<decimal, decimal> sqrt,
             Func<decimal, decimal> arctg)
         {
             return arctg(ExecuteG(val, sqrt));
         }
-
+        
         private static decimal ExecutePsi(decimal val, Func<decimal, decimal> sin)
         {
             return sin(3 * val + 0.6M);
