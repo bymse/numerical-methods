@@ -5,7 +5,7 @@ namespace Lab2
 {
     public static class MatrixHelpers
     {
-        public static decimal Norm(decimal[,] arr)
+        public static decimal Norm(this decimal[,] arr)
         {
             var max = 0M;
             var r = arr.GetLength(0);

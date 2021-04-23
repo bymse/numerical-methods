@@ -22,28 +22,31 @@ namespace Lab2
 
             return x;
         }
-        
+
         private static (decimal[,] Q, decimal[,] R) QrHouseholder(decimal[,] m)
         {
             var q = new decimal[m.GetLength(0)][,];
             decimal[,] z = m, z1;
             for (var k = 0; k < m.GetLength(0) && k < m.GetLength(0) - 1; k++)
             {
-                z1 = matrix_minor(z, k);
+                z1 = Minor(z, k);
                 z = z1;
 
-                var x =CopyColumn(z, k);
+                var x = GetColumn(z, k);
                 var a = x.Norm();
                 if (m[k, k] > 0)
                     a = -a;
 
                 var e = new decimal[m.GetLength(0)];
                 for (var i = 0; i < m.GetLength(0); i++)
-                    e[i] = (i == k) ? 1 : 0;
+                    e[i] = i == k ? 1 : 0;
 
-                vmadd(x, e, a, e, m.GetLength(0));
-                vdiv(e, e.Norm(), e, m.GetLength(0));
-                q[k] = vmul(e, m.GetLength(0));
+                var n = m.GetLength(0);
+                for (var i = 0; i < n; i++)
+                    e[i] = x[i] + a * e[i];
+                
+                e = Divide(e, e.Norm());
+                q[k] = IdentityMinusVOnTransponed(e);
                 z1 = q[k].Multiply(z);
                 z = z1;
             }
@@ -61,8 +64,8 @@ namespace Lab2
 
             return (resultQ, resultR);
         }
-        
-        private static decimal[,] matrix_minor(decimal[,] x, int d)
+
+        private static decimal[,] Minor(decimal[,] x, int d)
         {
             var n = x.GetLength(0);
             var m = new decimal[n, n];
@@ -74,16 +77,10 @@ namespace Lab2
             return m;
         }
 
-        //c = a + b * s
-        private static void vmadd(decimal[] a, decimal[] b, decimal s, decimal[] c, int n)
-        {
-            for (var i = 0; i < n; i++)
-                c[i] = a[i] + s * b[i];
-        }
-
         /* m = I - v v^T */
-        private static decimal[,] vmul(decimal[] v, int n)
+        private static decimal[,] IdentityMinusVOnTransponed(decimal[] v)
         {
+            var n = v.Length;
             var x = new decimal[n, n];
             for (var i = 0; i < n; i++)
             for (var j = 0; j < n; j++)
@@ -94,16 +91,16 @@ namespace Lab2
             return x;
         }
 
-        private static decimal[] vdiv(decimal[] x, decimal d, decimal[] y, int n)
+        private static decimal[] Divide(decimal[] x, decimal d)
         {
-            for (var i = 0; i < n; i++) y[i] = x[i] / d;
+            var y = new decimal[x.Length];
+            for (var i = 0; i < x.Length; i++) y[i] = x[i] / d;
             return y;
         }
 
-        /* take c-th column of m, put in v */
-        private static decimal[] CopyColumn(decimal[,] from, int column)
+        private static decimal[] GetColumn(decimal[,] from, int column)
         {
-            var to = new decimal[from.GetLength(0)]; 
+            var to = new decimal[from.GetLength(0)];
             for (var i = 0; i < from.GetLength(0); i++)
                 to[i] = from[i, column];
             return to;

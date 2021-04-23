@@ -50,14 +50,8 @@ namespace Lab2
             {
                 vector[i] = vector[i] - b[i];
             }
-
-            var k = 0M;
-            for (var i = 0; i < n; i++)
-            {
-                k += vector[i] * vector[i];
-            }
-
-            return (decimal) Math.Sqrt((double) k);
+            
+            return vector.Norm();
         }
     }
 }

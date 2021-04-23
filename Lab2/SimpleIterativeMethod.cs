@@ -10,15 +10,15 @@ namespace Lab2
             var n = b.Length;
             var x = new decimal[n];
 
-            var temp = 2 / (Norm(a) + e);
+            var temp = 2 / (a.Norm() + e);
             var bCoeffs = CalculateBCoeffs(a, temp);
-            var bNorm = Norm(bCoeffs);
+            var bNorm = bCoeffs.Norm();
             if (bNorm >= 1)
             {
                 (a, b) = Fix(a, b);
-                temp = 2 / (Norm(a) + e);
+                temp = 2 / (a.Norm() + e);
                 bCoeffs = CalculateBCoeffs(a, temp);
-                bNorm = Norm(bCoeffs);
+                bNorm = bCoeffs.Norm();
             }
 
             if (bNorm >= 1)
@@ -79,24 +79,6 @@ namespace Lab2
             var outputB = transponed.Multiply(b);
 
             return (outputA, outputB);
-        }
-
-        private static decimal Norm(decimal[,] arr)
-        {
-            var max = 0M;
-            var r = arr.GetLength(0);
-            for (var j = 0; j < r; j++)
-            {
-                var sum = 0M;
-                for (var i = 0; i < r; i++)
-                {
-                    sum += Math.Abs(arr[i, j]);
-                }
-
-                max = Math.Max(max, sum);
-            }
-
-            return max;
         }
     }
 }
