@@ -5,7 +5,7 @@ namespace Lab2
 {
     public class SeidelIterativeMethod
     {
-        public static decimal[] Solve(decimal[,] a, decimal[] b, decimal accuracy)
+        public static (decimal[] Solution, int IterationsCount) Solve(decimal[,] a, decimal[] b, decimal accuracy)
         {
             var iterationsCount = 0;
             var solution = new decimal[b.Length];
@@ -30,7 +30,7 @@ namespace Lab2
                 stopValue = ComputeStopCondition(a, b, solution);
             }
 
-            return solution;
+            return (solution, iterationsCount);
         }
 
         private static decimal ComputeStopCondition(decimal[,] a, decimal[] b, decimal[] solution)

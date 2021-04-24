@@ -2,9 +2,9 @@ namespace Lab2.Tests
 {
     public class QrMethodTest : SystemOfEquationsTestBase
     {
-        protected override decimal[] Calculate(decimal[,] a, decimal[] b)
+        protected override (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy)
         {
-            return QrMethod.Solve(a, b);
+            return (QrMethod.Solve(a, b), default);
         }
     }
 }

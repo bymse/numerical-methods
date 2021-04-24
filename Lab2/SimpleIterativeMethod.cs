@@ -5,7 +5,7 @@ namespace Lab2
 {
     public class SimpleIterativeMethod
     {
-        public static decimal[] Solve(decimal[,] a, decimal[] b, decimal e)
+        public static (decimal[] x, int iterationsCount) Solve(decimal[,] a, decimal[] b, decimal e)
         {
             var n = b.Length;
             var x = new decimal[n];
@@ -30,8 +30,10 @@ namespace Lab2
             var c = b.Select(r => temp * r).ToArray();
             c.CopyTo(xPrevious, 0);
 
+            var iterationsCount = 0;
             while (true)
             {
+                iterationsCount++;
                 var newX = bCoeffs.Multiply(xPrevious).Sum(c);
 
                 for (var i = 0; i < x.Length; i++)
@@ -42,7 +44,7 @@ namespace Lab2
 
                 var cur = x.Select((val, i) => Math.Abs(val - xPrevious[i])).Max();
                 if (cur <= target)
-                    return x;
+                    return (x, iterationsCount);
             }
         }
 

@@ -5,21 +5,23 @@ namespace Lab2.Tests
 {
     public class SimpleIterativeMethodTest : SystemOfEquationsTestBase
     {
-        protected override decimal[] Calculate(decimal[,] a, decimal[] b)
+        protected override (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy)
         {
-            return SimpleIterativeMethod.Solve(a, b, ACCURACY);
+            return SimpleIterativeMethod.Solve(a, b, accuracy);
         }
 
-        [Test]
-        public override void Test0()
+        [TestCase(0.01)]
+        [TestCase(0.001)]
+        public override void Test0(decimal accuracy)
         {
-            Assert.Throws<Exception>(() => base.Test0());
+            Assert.Throws<Exception>(() => base.Test0(accuracy));
         }
 
-        [Test]
-        public override void Test4()
+        [TestCase(0.01)]
+        [TestCase(0.001)]
+        public override void Test4(decimal accuracy)
         {
-            Assert.Throws<Exception>(() => base.Test4());
+            Assert.Throws<Exception>(() => base.Test4(accuracy));
         }
     }
 }

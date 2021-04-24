@@ -46,7 +46,7 @@ namespace Lab2
                     e[i] = x[i] + a * e[i];
                 
                 e = Divide(e, e.Norm());
-                q[k] = IdentityMinusVOnTransponed(e);
+                q[k] = IdentityMinusVOnTransposed(e);
                 z1 = q[k].Multiply(z);
                 z = z1;
             }
@@ -78,7 +78,7 @@ namespace Lab2
         }
 
         /* m = I - v v^T */
-        private static decimal[,] IdentityMinusVOnTransponed(decimal[] v)
+        private static decimal[,] IdentityMinusVOnTransposed(decimal[] v)
         {
             var n = v.Length;
             var x = new decimal[n, n];
