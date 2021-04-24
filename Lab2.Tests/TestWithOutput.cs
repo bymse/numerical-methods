@@ -16,7 +16,7 @@ namespace Lab2.Tests
         [OneTimeSetUp]
         public void Initialize()
         {
-            stringBuilder.Append("№ Теста,x',e,");
+            stringBuilder.Append("№ Теста,n,E,x',e,");
             stringBuilder.Append("МПИ: x, МПИ: delta, МПИ: k,");
             stringBuilder.Append("М-д Зейделя: x, М-д Зейделя: delta, М-д Зейделя: k,");
             stringBuilder.Append("М-д Гаусса: x, М-д Гаусса: delta,");
@@ -44,7 +44,7 @@ namespace Lab2.Tests
             for (var index = 0; index < @case.Solution.Length; index++)
             {
                 var expected = @case.Solution[index];
-                stringBuilder.Append($",{expected},{@case.Accuracy},");
+                stringBuilder.Append($",-,-,{expected},{@case.Accuracy},");
                 
                 foreach (var (solution, iterationsCount) in results)
                 {

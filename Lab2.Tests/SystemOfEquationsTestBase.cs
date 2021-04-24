@@ -23,7 +23,6 @@ namespace Lab2.Tests
                 RightPart = new decimal[] {17, 32, 13},
                 Solution = new decimal[] {1, 2, 3},
                 Accuracy = accuracy
-                
             });
         }
 
@@ -95,9 +94,58 @@ namespace Lab2.Tests
             });
         }
 
-        public virtual void Test5()
+        [TestCaseSource(nameof(GetTest5Data))]
+        public virtual void Test5(decimal accuracy, int n, decimal e, decimal[] solution)
         {
-            
+            var a = new decimal[n, n];
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < n; j++)
+                {
+                    if (i == j)
+                    {
+                        a[i, j] = 1;
+                        a[i, j] += e * 13 * 1;
+                    }
+                    else if (i - j < 0)
+                    {
+                        a[i, j] = -1;
+                        a[i, j] += e * 13 * -1;
+                    }
+                    else
+                    {
+                        a[i, j] = 0;
+                        a[i, j] += e * 13 * -1;
+                    }
+                }
+            }
+
+            var b = new decimal[n];
+            for (var i = 0; i < b.Length - 1; i++)
+            {
+                b[i] = -1;
+            }
+
+            b[n - 1] = 1;
+
+            var testCase = new TestCase
+            {
+                Accuracy = accuracy,
+                Coefficients = a,
+                RightPart = b,
+                Solution = solution
+            };
+
+            Test(testCase);
+        }
+
+        public static IEnumerable<TestCaseData> GetTest5Data()
+        {
+            yield return new TestCaseData(0.01M, 4, 0.001M, new[] {0, 0, 0, 1000M / 1013M});
+            yield return new TestCaseData(0.01M, 4, 1M / 1000000M, new[] {0, 0, 0, 1000000M / 1000013M});
+
+            yield return new TestCaseData(0.01M, 5, 0.001M, new[] {0, 0, 0, 0, 1000M / 1013M});
+            yield return new TestCaseData(0.01M, 5, 1M / 1000000M, new[] {0, 0, 0, 0, 1000000M / 1000013M});
         }
 
         protected virtual void Test(TestCase @case)

@@ -29,21 +29,30 @@ namespace Lab2
             c.CopyTo(xPrevious, 0);
 
             var iterationsCount = 0;
-            while (true)
+            while (iterationsCount < 100000)
             {
                 iterationsCount++;
                 var newX = bCoeffs.Multiply(xPrevious).Sum(c);
 
-                for (var i = 0; i < x.Length; i++)
+                if (iterationsCount == 1)
                 {
-                    xPrevious[i] = x[i];
-                    x[i] = newX[i];
+                    continue;
+                }
+                else
+                {
+                    for (var i = 0; i < x.Length; i++)
+                    {
+                        xPrevious[i] = x[i];
+                        x[i] = newX[i];
+                    }
                 }
 
                 var stop = CalculateStopCondition(bNorm, x, xPrevious, sourceA, sourceB);
                 if (stop <= e)
                     return (x, iterationsCount);
             }
+
+            throw new Exception();
         }
 
         private static decimal CalculateStopCondition(
@@ -55,12 +64,11 @@ namespace Lab2
         {
             if (bNorm < 1)
             {
-                return bNorm /(1 - bNorm) * x.Select((val, i) => Math.Abs(val - xPrevious[i])).Max();;
+                var diff = x.Select((val, i) => val - xPrevious[i]).ToArray();
+                return diff.Norm() * bNorm /(1 - bNorm);
             }
-            else
-            {
-                return SeidelIterativeMethod.ComputeStopCondition(sourceA, sourceB, x);
-            }
+
+            return SeidelIterativeMethod.ComputeStopCondition(sourceA, sourceB, x);
         }
         
         private static decimal[,] CalculateBCoeffs(decimal[,] a, decimal temp)
@@ -83,17 +91,9 @@ namespace Lab2
 
         private static (decimal[,] a, decimal[] b) Fix(decimal[,] a, decimal[] b)
         {
-            var transponed = new decimal[a.GetLength(0), a.GetLength(0)];
-            for (var i = 0; i < a.GetLength(0); i++)
-            {
-                for (var j = 0; j < a.GetLength(0); j++)
-                {
-                    transponed[i, j] = a[j, i];
-                }
-            }
-
-            var outputA = transponed.Multiply(a);
-            var outputB = transponed.Multiply(b);
+            var transposed = a.Transpose();
+            var outputA = transposed.Multiply(a);
+            var outputB = transposed.Multiply(b);
 
             return (outputA, outputB);
         }

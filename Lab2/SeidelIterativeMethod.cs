@@ -28,6 +28,9 @@ namespace Lab2
                 }
 
                 stopValue = ComputeStopCondition(a, b, solution);
+
+                if (iterationsCount > 10000)
+                    break;
             }
 
             return (solution, iterationsCount);
@@ -35,22 +38,11 @@ namespace Lab2
 
         public static decimal ComputeStopCondition(decimal[,] a, decimal[] b, decimal[] solution)
         {
-            var n = b.Length;
-            var vector = new decimal[n];
-            for (var i = 0; i < n; i++)
-            {
-                vector[i] = 0.0M;
-                for (var j = 0; j < n; j++)
-                {
-                    vector[i] = vector[i] + a[i, j] * solution[j];
-                }
-            }
-
-            for (var i = 0; i < n; i++)
+            var vector = a.Multiply(solution);
+            for (var i = 0; i < b.Length; i++)
             {
                 vector[i] = vector[i] - b[i];
             }
-            
             return vector.Norm();
         }
     }
