@@ -5,9 +5,9 @@ namespace Lab2.Tests
 {
     public class SeidelIterativeMethodTest : SystemOfEquationsTestBase
     {
-        protected override (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy)
+        protected override (decimal[] Solution, int? IterationsCount) Calculate(TestCase @case)
         {
-            return SeidelIterativeMethod.Solve(a, b, accuracy);
+            return SeidelIterativeMethod.Solve(@case.Coefficients, @case.RightPart, @case.Accuracy);
        }
 
         [TestCase(0.01)]

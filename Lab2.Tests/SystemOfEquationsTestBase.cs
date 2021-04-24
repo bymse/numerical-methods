@@ -7,10 +7,9 @@ namespace Lab2.Tests
 {
     public abstract class SystemOfEquationsTestBase
     {
-        protected abstract (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy);
+        protected abstract (decimal[] Solution, int? IterationsCount) Calculate(TestCase @case);
 
         [TestCase(0.01)]
-        [TestCase(0.001)]
         public virtual void Test0(decimal accuracy)
         {
             Test(new TestCase()
@@ -23,11 +22,11 @@ namespace Lab2.Tests
                 },
                 RightPart = new decimal[] {17, 32, 13},
                 Solution = new decimal[] {1, 2, 3},
+                
             }, accuracy);
         }
 
         [TestCase(0.01)]
-        [TestCase(0.001)]
         public virtual void Test1(decimal accuracy)
         {
             Test(new TestCase
@@ -44,7 +43,6 @@ namespace Lab2.Tests
         }
 
         [TestCase(0.01)]
-        [TestCase(0.001)]
         public virtual void Test2(decimal accuracy)
         {
             Test(new TestCase
@@ -61,7 +59,6 @@ namespace Lab2.Tests
         }
 
         [TestCase(0.01)]
-        [TestCase(0.001)]
         public virtual void Test3(decimal accuracy)
         {
             Test(new TestCase
@@ -78,7 +75,6 @@ namespace Lab2.Tests
         }
 
         [TestCase(0.01)]
-        [TestCase(0.001)]
         public virtual void Test4(decimal accuracy)
         {
             Test(new TestCase
@@ -101,7 +97,7 @@ namespace Lab2.Tests
 
         private void Test(TestCase @case, decimal accuracy)
         {
-            var result = Calculate(@case.Coefficients, @case.RightPart, accuracy);
+            var result = Calculate(@case);
             AssertResult(@case.Solution, result.Solution, accuracy);
         }
 

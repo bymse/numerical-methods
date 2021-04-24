@@ -4,9 +4,9 @@ namespace Lab2.Tests
 {
     public class GaussianEliminationTest : SystemOfEquationsTestBase
     {
-        protected override (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy)
+        protected override (decimal[] Solution, int? IterationsCount) Calculate(TestCase @case)
         {
-            return (GaussianElimination.Solve(a, b), default);
+            return (GaussianElimination.Solve(@case.Coefficients, @case.RightPart), default);
         }
     }
 }

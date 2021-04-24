@@ -2,7 +2,7 @@ using System;
 
 namespace Lab2
 {
-    public static class QrMethod
+    public static class HouseholderMethod
     {
         public static decimal[] Solve(decimal[,] a, decimal[] b)
         {

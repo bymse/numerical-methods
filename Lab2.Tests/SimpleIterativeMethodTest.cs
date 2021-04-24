@@ -5,9 +5,9 @@ namespace Lab2.Tests
 {
     public class SimpleIterativeMethodTest : SystemOfEquationsTestBase
     {
-        protected override (decimal[] Solution, int IterationsCount) Calculate(decimal[,] a, decimal[] b, decimal accuracy)
+        protected override (decimal[] Solution, int? IterationsCount) Calculate(TestCase @case)
         {
-            return SimpleIterativeMethod.Solve(a, b, accuracy);
+            return SimpleIterativeMethod.Solve(@case.Coefficients, @case.RightPart, @case.Accuracy);
         }
 
         [TestCase(0.01)]
