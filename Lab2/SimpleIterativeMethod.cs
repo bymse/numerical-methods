@@ -5,8 +5,11 @@ namespace Lab2
 {
     public class SimpleIterativeMethod
     {
-        public static (decimal[] x, int iterationsCount) Solve(decimal[,] a, decimal[] b, decimal e)
+        public static (decimal[] x, int iterationsCount) Solve(decimal[,] sourceA, decimal[] sourceB, decimal e)
         {
+            var a = (decimal[,]) sourceA.Clone();
+            var b = (decimal[]) sourceB.Clone();; 
+            
             var n = b.Length;
             var x = new decimal[n];
 
@@ -20,11 +23,6 @@ namespace Lab2
                 bCoeffs = CalculateBCoeffs(a, temp);
                 bNorm = bCoeffs.Norm();
             }
-
-            if (bNorm >= 1)
-                throw new Exception();
-
-            var target = e * (1 - bNorm) / bNorm;
 
             var xPrevious = new decimal[n];
             var c = b.Select(r => temp * r).ToArray();
@@ -42,12 +40,29 @@ namespace Lab2
                     x[i] = newX[i];
                 }
 
-                var cur = x.Select((val, i) => Math.Abs(val - xPrevious[i])).Max();
-                if (cur <= target)
+                var stop = CalculateStopCondition(bNorm, x, xPrevious, sourceA, sourceB);
+                if (stop <= e)
                     return (x, iterationsCount);
             }
         }
 
+        private static decimal CalculateStopCondition(
+            decimal bNorm,
+            decimal[] x,
+            decimal[] xPrevious,
+            decimal[,] sourceA,
+            decimal[] sourceB)
+        {
+            if (bNorm < 1)
+            {
+                return bNorm /(1 - bNorm) * x.Select((val, i) => Math.Abs(val - xPrevious[i])).Max();;
+            }
+            else
+            {
+                return SeidelIterativeMethod.ComputeStopCondition(sourceA, sourceB, x);
+            }
+        }
+        
         private static decimal[,] CalculateBCoeffs(decimal[,] a, decimal temp)
         {
             var n = a.GetLength(0);

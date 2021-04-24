@@ -33,7 +33,7 @@ namespace Lab2
             return (solution, iterationsCount);
         }
 
-        private static decimal ComputeStopCondition(decimal[,] a, decimal[] b, decimal[] solution)
+        public static decimal ComputeStopCondition(decimal[,] a, decimal[] b, decimal[] solution)
         {
             var n = b.Length;
             var vector = new decimal[n];
