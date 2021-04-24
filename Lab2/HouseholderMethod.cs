@@ -77,7 +77,6 @@ namespace Lab2
             return m;
         }
 
-        /* m = I - v v^T */
         private static decimal[,] IdentityMinusVOnTransposed(decimal[] v)
         {
             var n = v.Length;
@@ -94,7 +93,8 @@ namespace Lab2
         private static decimal[] Divide(decimal[] x, decimal d)
         {
             var y = new decimal[x.Length];
-            for (var i = 0; i < x.Length; i++) y[i] = x[i] / d;
+            for (var i = 0; i < x.Length; i++) 
+                y[i] = x[i] / d;
             return y;
         }
 

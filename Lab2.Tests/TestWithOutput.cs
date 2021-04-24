@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Lab2.Tests
@@ -12,11 +13,11 @@ namespace Lab2.Tests
     public class TestWithOutput : SystemOfEquationsTestBase
     {
         private readonly StringBuilder stringBuilder = new();
-        
+
         [OneTimeSetUp]
         public void Initialize()
         {
-            stringBuilder.Append("№ Теста,n,E,x',e,");
+            stringBuilder.Append("№ Теста,n,E,x',Точность,");
             stringBuilder.Append("МПИ: x, МПИ: delta, МПИ: k,");
             stringBuilder.Append("М-д Зейделя: x, М-д Зейделя: delta, М-д Зейделя: k,");
             stringBuilder.Append("М-д Гаусса: x, М-д Гаусса: delta,");
@@ -26,7 +27,7 @@ namespace Lab2.Tests
         [OneTimeTearDown]
         public void WriteToFile()
         {
-            File.WriteAllText(@"C:\Users\bymse\Desktop\чм\out.csv",
+            File.WriteAllText(@"D:\temp\out.csv",
                 stringBuilder.ToString(),
                 Encoding.UTF8);
         }
@@ -44,8 +45,16 @@ namespace Lab2.Tests
             for (var index = 0; index < @case.Solution.Length; index++)
             {
                 var expected = @case.Solution[index];
-                stringBuilder.Append($",-,-,{expected},{@case.Accuracy},");
-                
+                if (@case.Length.HasValue && @case.Multiplier.HasValue && index == 0)
+                {
+                    stringBuilder.Append($",{@case.Length},{@case.Multiplier},{expected},{@case.Accuracy},");
+                }
+                else
+                {
+                    stringBuilder.Append($",,,{expected},{@case.Accuracy},");
+                }
+
+
                 foreach (var (solution, iterationsCount) in results)
                 {
                     var actual = solution[index];
@@ -55,8 +64,8 @@ namespace Lab2.Tests
                     {
                         stringBuilder.Append($"{iterationsCount},");
                     }
-                    
-                    //Assert.True(delta <= @case.Accuracy);
+
+                    actual.Should().BeApproximately(expected, @case.Accuracy);
                 }
 
                 stringBuilder.AppendLine();
@@ -72,7 +81,7 @@ namespace Lab2.Tests
         }
 
         #region Tests
-        
+
         [Order(1)]
         [TestCase(0.001)]
         public override void Test0(decimal accuracy)
@@ -88,7 +97,7 @@ namespace Lab2.Tests
             stringBuilder.Append('1');
             base.Test1(accuracy);
         }
-        
+
         [Order(3)]
         [TestCase(0.001)]
         public override void Test2(decimal accuracy)
@@ -96,7 +105,7 @@ namespace Lab2.Tests
             stringBuilder.Append('2');
             base.Test2(accuracy);
         }
-        
+
         [Order(4)]
         [TestCase(0.001)]
         public override void Test3(decimal accuracy)
@@ -104,7 +113,7 @@ namespace Lab2.Tests
             stringBuilder.Append('3');
             base.Test3(accuracy);
         }
-        
+
         [Order(5)]
         [TestCase(0.001)]
         public override void Test4(decimal accuracy)
@@ -112,7 +121,15 @@ namespace Lab2.Tests
             stringBuilder.Append('4');
             base.Test4(accuracy);
         }
-        
+
+        [Order(6)]
+        [TestCaseSource(nameof(GetTest5Data))]
+        public override void Test5(decimal accuracy, int n, decimal e, decimal[] solution)
+        {
+            stringBuilder.Append('5');
+            base.Test5(accuracy, n, e, solution);
+        }
+
         #endregion
     }
 }

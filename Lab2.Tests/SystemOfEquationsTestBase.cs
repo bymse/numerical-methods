@@ -26,7 +26,7 @@ namespace Lab2.Tests
             });
         }
 
-        [TestCase(0.01)]
+        [TestCase(0.001)]
         public virtual void Test1(decimal accuracy)
         {
             Test(new TestCase
@@ -43,7 +43,7 @@ namespace Lab2.Tests
             });
         }
 
-        [TestCase(0.01)]
+        [TestCase(0.001)]
         public virtual void Test2(decimal accuracy)
         {
             Test(new TestCase
@@ -60,7 +60,7 @@ namespace Lab2.Tests
             });
         }
 
-        [TestCase(0.01)]
+        [TestCase(0.001)]
         public virtual void Test3(decimal accuracy)
         {
             Test(new TestCase
@@ -77,7 +77,7 @@ namespace Lab2.Tests
             });
         }
 
-        [TestCase(0.01)]
+        [TestCase(0.001)]
         public virtual void Test4(decimal accuracy)
         {
             Test(new TestCase
@@ -133,7 +133,9 @@ namespace Lab2.Tests
                 Accuracy = accuracy,
                 Coefficients = a,
                 RightPart = b,
-                Solution = solution
+                Solution = solution,
+                Length = n,
+                Multiplier = e
             };
 
             Test(testCase);
@@ -141,11 +143,11 @@ namespace Lab2.Tests
 
         public static IEnumerable<TestCaseData> GetTest5Data()
         {
-            yield return new TestCaseData(0.01M, 4, 0.001M, new[] {0, 0, 0, 1000M / 1013M});
-            yield return new TestCaseData(0.01M, 4, 1M / 1000000M, new[] {0, 0, 0, 1000000M / 1000013M});
+            yield return new TestCaseData(0.001M, 4, 0.001M, new[] {0, 0, 0, 1000M / 1013M});
+            yield return new TestCaseData(0.001M, 4, 1M / 1000000M, new[] {0, 0, 0, 1000000M / 1000013M});
 
-            yield return new TestCaseData(0.01M, 5, 0.001M, new[] {0, 0, 0, 0, 1000M / 1013M});
-            yield return new TestCaseData(0.01M, 5, 1M / 1000000M, new[] {0, 0, 0, 0, 1000000M / 1000013M});
+            yield return new TestCaseData(0.001M, 5, 0.001M, new[] {0, 0, 0, 0, 1000M / 1013M});
+            yield return new TestCaseData(0.001M, 5, 1M / 1000000M, new[] {0, 0, 0, 0, 1000000M / 1000013M});
         }
 
         protected virtual void Test(TestCase @case)
@@ -158,7 +160,7 @@ namespace Lab2.Tests
         {
             for (var i = 0; i < expected.Length; i++)
             {
-                actual[i].Should().BeInRange(expected[i] - accuracy, expected[i] + accuracy);
+                actual[i].Should().BeApproximately(expected[i], accuracy);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lab2
 {
@@ -7,14 +8,23 @@ namespace Lab2
     {
         public static (decimal[] Solution, int IterationsCount) Solve(decimal[,] a, decimal[] b, decimal accuracy)
         {
+            accuracy /= 1000;
             var iterationsCount = 0;
-            var solution = new decimal[b.Length];
             var n = b.Length;
 
+            if (!IsEqualToTransposed(a) || !a.IsDiagonallyDominant())
+            {
+                (a, b) = MatrixHelpers.MultiplyOnTransposed(a, b);
+            }
+            
+            var solution = b.Select((e, i) => e / a[i, i]).ToArray();
             var stopValue = 1e10M;
             while (stopValue >= accuracy)
             {
                 iterationsCount++;
+                if (iterationsCount > 1000000)
+                    break;
+                
                 for (var i = 0; i < n; i++)
                 {
                     var sum = 0M;
@@ -29,8 +39,6 @@ namespace Lab2
 
                 stopValue = ComputeStopCondition(a, b, solution);
 
-                if (iterationsCount > 10000)
-                    break;
             }
 
             return (solution, iterationsCount);
@@ -43,7 +51,24 @@ namespace Lab2
             {
                 vector[i] = vector[i] - b[i];
             }
+
             return vector.Norm();
+        }
+
+        private static bool IsEqualToTransposed(decimal[,] a)
+        {
+            var transposed = a.Transpose();
+
+            for (var i = 0; i < a.GetLength(0); i++)
+            {
+                for (var j = 0; j < a.GetLength(0); j++)
+                {
+                    if (a[i, j] != transposed[i, j])
+                        return false;
+                }
+            }
+
+            return true;
         }
     }
 }

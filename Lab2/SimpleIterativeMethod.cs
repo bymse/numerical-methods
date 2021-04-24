@@ -7,19 +7,20 @@ namespace Lab2
     {
         public static (decimal[] x, int iterationsCount) Solve(decimal[,] sourceA, decimal[] sourceB, decimal e)
         {
+            e /= 100;
             var a = (decimal[,]) sourceA.Clone();
-            var b = (decimal[]) sourceB.Clone();; 
-            
+            var b = (decimal[]) sourceB.Clone();
+
             var n = b.Length;
             var x = new decimal[n];
 
-            var temp = 2 / (a.Norm() + e);
+            var temp = 2 / (a.Norm() - e);
             var bCoeffs = CalculateBCoeffs(a, temp);
             var bNorm = bCoeffs.Norm();
             if (bNorm >= 1)
             {
-                (a, b) = Fix(a, b);
-                temp = 2 / (a.Norm() + e);
+                (a, b) = MatrixHelpers.MultiplyOnTransposed(a, b);
+                temp = 2 / (a.Norm() - e);
                 bCoeffs = CalculateBCoeffs(a, temp);
                 bNorm = bCoeffs.Norm();
             }
@@ -34,21 +35,14 @@ namespace Lab2
                 iterationsCount++;
                 var newX = bCoeffs.Multiply(xPrevious).Sum(c);
 
-                if (iterationsCount == 1)
+                for (var i = 0; i < x.Length; i++)
                 {
-                    continue;
-                }
-                else
-                {
-                    for (var i = 0; i < x.Length; i++)
-                    {
-                        xPrevious[i] = x[i];
-                        x[i] = newX[i];
-                    }
+                    xPrevious[i] = x[i];
+                    x[i] = newX[i];
                 }
 
                 var stop = CalculateStopCondition(bNorm, x, xPrevious, sourceA, sourceB);
-                if (stop <= e)
+                if (stop < e)
                     return (x, iterationsCount);
             }
 
@@ -65,12 +59,12 @@ namespace Lab2
             if (bNorm < 1)
             {
                 var diff = x.Select((val, i) => val - xPrevious[i]).ToArray();
-                return diff.Norm() * bNorm /(1 - bNorm);
+                return diff.Norm() * bNorm / (1 - bNorm);
             }
 
             return SeidelIterativeMethod.ComputeStopCondition(sourceA, sourceB, x);
         }
-        
+
         private static decimal[,] CalculateBCoeffs(decimal[,] a, decimal temp)
         {
             var n = a.GetLength(0);
@@ -87,15 +81,6 @@ namespace Lab2
             }
 
             return bCoeffs;
-        }
-
-        private static (decimal[,] a, decimal[] b) Fix(decimal[,] a, decimal[] b)
-        {
-            var transposed = a.Transpose();
-            var outputA = transposed.Multiply(a);
-            var outputB = transposed.Multiply(b);
-
-            return (outputA, outputB);
         }
     }
 }

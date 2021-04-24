@@ -71,21 +71,64 @@ namespace Lab2
         public static decimal Norm(this decimal[] vector)
         {
             var sum = vector.Sum(t => t * t);
-            return (decimal) Math.Sqrt((double) sum);
+            return Sqrt(sum);
+        }
+
+        private static decimal Sqrt(decimal n)
+        {
+            var x = n;
+            decimal y = 1;
+
+            var error = n * 10e-8M;
+            while (Math.Abs(x - y) > error)
+            {
+                x = (x + y) / 2;
+                y = n / x;
+            }
+
+            return x;
         }
 
         public static decimal[,] Transpose(this decimal[,] matrix)
         {
-            var transponed = new decimal[matrix.GetLength(0), matrix.GetLength(0)];
+            var transposed = new decimal[matrix.GetLength(0), matrix.GetLength(0)];
             for (var i = 0; i < matrix.GetLength(0); i++)
             {
                 for (var j = 0; j < matrix.GetLength(0); j++)
                 {
-                    transponed[i, j] = matrix[j, i];
+                    transposed[i, j] = matrix[j, i];
                 }
             }
 
-            return transponed;
+            return transposed;
+        }
+
+        public static (decimal[,] a, decimal[] b) MultiplyOnTransposed(decimal[,] a, decimal[] b)
+        {
+            var transposed = a.Transpose();
+            var outputA = transposed.Multiply(a);
+            var outputB = transposed.Multiply(b);
+            return (outputA, outputB);
+        }
+
+        public static bool IsDiagonallyDominant(this decimal[,] matrix)
+        {
+            var wasStrict = false;
+            for (var i = 0; i < matrix.GetLength(0); i++)
+            {
+                var sum = 0M;
+                for (var j = 0; j < matrix.GetLength(0); j++)
+                {
+                    sum += Math.Abs(matrix[i, j]);
+                }
+            
+                if (Math.Abs(matrix[i, i]) < sum)
+                    return false;
+            
+                wasStrict = Math.Abs(matrix[i, i]) > sum;
+            }
+            
+            return wasStrict;
         }
     }
 }
