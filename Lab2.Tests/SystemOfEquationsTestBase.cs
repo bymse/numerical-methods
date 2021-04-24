@@ -9,7 +9,7 @@ namespace Lab2.Tests
     {
         protected abstract (decimal[] Solution, int? IterationsCount) Calculate(TestCase @case);
 
-        [TestCase(0.01)]
+        [TestCase(0.001)]
         public virtual void Test0(decimal accuracy)
         {
             Test(new TestCase()
@@ -22,8 +22,9 @@ namespace Lab2.Tests
                 },
                 RightPart = new decimal[] {17, 32, 13},
                 Solution = new decimal[] {1, 2, 3},
+                Accuracy = accuracy
                 
-            }, accuracy);
+            });
         }
 
         [TestCase(0.01)]
@@ -38,8 +39,9 @@ namespace Lab2.Tests
                     {1, 17, 1},
                     {1, 1, 19},
                 },
-                Solution = new decimal[] {1, 1, 1}
-            }, accuracy);
+                Solution = new decimal[] {1, 1, 1},
+                Accuracy = accuracy
+            });
         }
 
         [TestCase(0.01)]
@@ -54,8 +56,9 @@ namespace Lab2.Tests
                     {1, 1, -19},
                 },
                 RightPart = new decimal[] {-17, -19, -21},
-                Solution = new[] {779M / 599M, 759M / 599M, 743M / 599M}
-            }, accuracy);
+                Solution = new[] {779M / 599M, 759M / 599M, 743M / 599M},
+                Accuracy = accuracy
+            });
         }
 
         [TestCase(0.01)]
@@ -70,8 +73,9 @@ namespace Lab2.Tests
                     {17, 18, -19}
                 },
                 RightPart = new decimal[] {17, 19, 21},
-                Solution = new[] {11785M / 9318M, 5155M / 4659M, 10013M / 9318M}
-            }, accuracy);
+                Solution = new[] {11785M / 9318M, 5155M / 4659M, 10013M / 9318M},
+                Accuracy = accuracy
+            });
         }
 
         [TestCase(0.01)]
@@ -86,8 +90,9 @@ namespace Lab2.Tests
                     {14, 14, 19}
                 },
                 RightPart = new decimal[] {17, 19, 21},
-                Solution = new[] {-53M / 337M, 207M / 337M, 259M / 337M}
-            }, accuracy);
+                Solution = new[] {-53M / 337M, 207M / 337M, 259M / 337M},
+                Accuracy = accuracy
+            });
         }
 
         public virtual void Test5()
@@ -95,10 +100,10 @@ namespace Lab2.Tests
             
         }
 
-        private void Test(TestCase @case, decimal accuracy)
+        protected virtual void Test(TestCase @case)
         {
             var result = Calculate(@case);
-            AssertResult(@case.Solution, result.Solution, accuracy);
+            AssertResult(@case.Solution, result.Solution, @case.Accuracy);
         }
 
         private static void AssertResult(decimal[] expected, decimal[] actual, decimal accuracy)

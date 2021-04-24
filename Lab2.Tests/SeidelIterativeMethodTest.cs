@@ -9,12 +9,5 @@ namespace Lab2.Tests
         {
             return SeidelIterativeMethod.Solve(@case.Coefficients, @case.RightPart, @case.Accuracy);
        }
-
-        [TestCase(0.01)]
-        [TestCase(0.001)]
-        public override void Test3(decimal accuracy)
-        {
-            Assert.Throws<OverflowException>(() => base.Test3(accuracy));
-        }
     }
 }
