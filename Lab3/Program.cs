@@ -9,12 +9,21 @@ namespace Lab3
             var ln = (decimal) Math.Log((double) (x + 1));
             return x * ln - 0.3M;
         }
+        
+        private static decimal Derivative(decimal x)
+        {
+            var ln = (decimal) Math.Log((double) (x + 1));
+            return x / (x + 1) + ln;
+        }
 
         static void Main(string[] args)
         {
-            var (left, right) = NewtonMethod.LocalizeSolution(Func, 0, 10);
-            Console.WriteLine(left);
-            Console.WriteLine(right);
+            var solution = NewtonMethod.Solve(
+                Func,
+                Derivative,
+                (0, 10),
+                0.0001M);
+            Console.WriteLine(solution);
         }
     }
 }
