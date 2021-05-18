@@ -74,7 +74,7 @@ namespace Lab2
             return Sqrt(sum);
         }
 
-        private static decimal Sqrt(decimal n)
+        public static decimal Sqrt(decimal n)
         {
             var x = n;
             decimal y = 1;
