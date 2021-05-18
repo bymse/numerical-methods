@@ -34,13 +34,13 @@ namespace Lab3
                     currentSolution = boundariesHalf;
                 }
 
-                if (currentSolution < boundariesHalf)
+                if (func(boundaries.left) * func(currentSolution) < 0)
                 {
-                    boundaries.left = currentSolution;
+                    boundaries.right = currentSolution;
                 }
                 else
                 {
-                    boundaries.right = currentSolution;
+                    boundaries.left = currentSolution;
                 }
             } while (Math.Abs(currentSolution - prevSolution) > precision);
 
