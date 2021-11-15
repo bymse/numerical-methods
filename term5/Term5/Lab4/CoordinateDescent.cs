@@ -9,14 +9,14 @@ namespace Lab4
         {
         }
 
-        public override void Minimize(double eps)
+        public virtual void Minimize(double eps)
         {
             CheckDimensions();
             //Set start approximation with 0 vector
             var xCurrent = new Matrix(A.GetRowDimension(), 1);
             Matrix xPrev;
             var step = 0;
-            Console.WriteLine("%8s %12s %12s %12s\n", "x", "y", "z", "f(x,y,z)");
+            Console.WriteLine("x;y;z;f(z,y,z)");
             do
             {
                 xPrev = xCurrent.Copy();
