@@ -9,14 +9,17 @@ end
 
 x = -1:1/10:1;
 y = subs(sum, x);
-plot(x,y);
+y_ideal = func(x);
+
 hold on
-y_2 = func(x);
-plot(x,y_2)
+task1(func);
+plot(x,y);
+plot(x, y_ideal);
 hold off
 
-function c = calculate_c(func, Q)
+legend('МНК', 'Лежандр', 'Эталон');
 
+function c = calculate_c(func, Q)
     numerator = integral(@(x) func(x).*Q(x), -1, 1);
     denominator = integral(@(x) (Q(x)).^2, -1, 1);
     c = numerator / denominator;
