@@ -6,15 +6,15 @@ namespace Lab4
 {
     class Program
     {
-        public static void Main(String[] args)
+        public static void Main(string[] args)
         {
             var n = 11;
             var eps = 10E-6;
             var minEig = 3.55501;
 
 
-            using var writer = new StreamWriter("C:\\Users\\bymse\\Desktop\\Prog\\csharp\\numerical-methods\\out.csv"); 
-            Console.SetOut(writer);
+            // using var writer = new StreamWriter("C:\\Users\\bymse\\Desktop\\Prog\\csharp\\numerical-methods\\out.csv"); 
+            // Console.SetOut(writer);
             
             var a = new Matrix(new[]
             {

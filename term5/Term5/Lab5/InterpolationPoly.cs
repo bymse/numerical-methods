@@ -6,7 +6,7 @@ namespace Lab5
         private InterpolationPoly() {
         }
 
-        public static Func<Double, Double> Build(double[] x, double[] y) {
+        public static Func<double, double> Build(double[] x, double[] y) {
             return t => {
                 var value = 0.0;
                 var l = new double[x.Length];
